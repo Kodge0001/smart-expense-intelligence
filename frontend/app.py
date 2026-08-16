@@ -501,97 +501,135 @@ st.markdown("""
     @media (max-width: 768px) {
         /* General Streamlit Container adjustments */
         .block-container {
-            padding: 1rem 0.75rem !important;
+            padding: 1rem 0.6rem !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
         }
 
         /* Top Header */
         .main-header {
             flex-direction: column !important;
-            align-items: flex-start !important;
-            padding: 1.1rem 1.25rem !important;
+            align-items: stretch !important;
+            padding: 1rem 1.1rem !important;
             gap: 0.75rem !important;
             border-radius: 14px !important;
+            margin-bottom: 1.25rem !important;
         }
         .main-header-title {
             font-size: 1.35rem !important;
+            text-align: center !important;
         }
         .main-header-subtitle {
-            font-size: 0.82rem !important;
+            font-size: 0.8rem !important;
+            text-align: center !important;
         }
         .user-chip {
-            align-self: flex-start !important;
+            align-self: center !important;
             font-size: 0.78rem !important;
             padding: 0.35rem 0.85rem !important;
         }
 
         /* Welcome & Hero Section */
         .hero-title {
-            font-size: 2.1rem !important;
+            font-size: 2rem !important;
             line-height: 1.2 !important;
         }
         .hero-subtitle {
-            font-size: 0.95rem !important;
-            margin-bottom: 1.5rem !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 1.25rem !important;
+            padding: 0 0.5rem !important;
         }
         .hero-badge {
-            font-size: 0.75rem !important;
-            padding: 0.3rem 0.8rem !important;
+            font-size: 0.72rem !important;
+            padding: 0.28rem 0.75rem !important;
         }
 
         /* Metrics Strip on Mobile (2 columns instead of 4) */
         .metric-strip {
             grid-template-columns: repeat(2, 1fr) !important;
-            gap: 0.75rem !important;
-            padding: 1rem !important;
-            margin: 1.5rem 0 !important;
+            gap: 0.65rem !important;
+            padding: 0.85rem !important;
+            margin: 1.25rem 0 !important;
         }
         .metric-number {
-            font-size: 1.45rem !important;
+            font-size: 1.35rem !important;
         }
         .metric-label {
-            font-size: 0.72rem !important;
+            font-size: 0.7rem !important;
         }
 
         /* KPI & Feature Cards */
         .kpi-card {
-            padding: 1rem !important;
+            padding: 0.9rem 1rem !important;
             border-radius: 12px !important;
-            margin-bottom: 0.6rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .kpi-label {
+            font-size: 0.68rem !important;
         }
         .kpi-value {
-            font-size: 1.35rem !important;
+            font-size: 1.3rem !important;
         }
         .nav-card {
             min-height: auto !important;
-            padding: 1.2rem 1rem !important;
-            margin-bottom: 0.75rem !important;
+            padding: 1.1rem 0.9rem !important;
+            margin-bottom: 0.65rem !important;
         }
 
-        /* Form Inputs & Buttons */
+        /* Forms, Inputs & 3D Buttons */
         .stButton>button {
             font-size: 0.92rem !important;
-            padding: 0.6rem 1rem !important;
-            border-radius: 10px !important;
+            padding: 0.65rem 1rem !important;
+            border-radius: 12px !important;
+            min-height: 48px !important; /* Touch ergonomics */
+            width: 100% !important;
+        }
+        .stTextInput>div>div>input {
+            font-size: 0.92rem !important;
+            padding: 0.6rem 0.85rem !important;
+            min-height: 44px !important;
         }
 
         /* Tables & Dataframes */
         [data-testid="stDataFrame"] {
             overflow-x: auto !important;
+            border-radius: 10px !important;
         }
 
         /* Section headers */
         .section-header {
             font-size: 1.1rem !important;
-            margin: 1.5rem 0 0.9rem 0 !important;
+            margin: 1.25rem 0 0.75rem 0 !important;
+            padding-bottom: 0.4rem !important;
+        }
+
+        /* Floating AI Chatbot Mobile Bounds */
+        #ai-chatbot-window {
+            width: 90vw !important;
+            max-width: 340px !important;
+            right: 5vw !important;
+            bottom: 75px !important;
+            left: auto !important;
+            top: auto !important;
+        }
+        #ai-chatbot-toggle {
+            bottom: 18px !important;
+            right: 18px !important;
+            width: 48px !important;
+            height: 48px !important;
+            font-size: 20px !important;
         }
     }
 
     @media (max-width: 480px) {
         .metric-strip {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr 1fr !important;
         }
         .hero-title {
-            font-size: 1.8rem !important;
+            font-size: 1.7rem !important;
+        }
+        .main-header {
+            padding: 0.9rem !important;
         }
     }
 
