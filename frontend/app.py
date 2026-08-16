@@ -641,11 +641,20 @@ def api_post(endpoint: str, **kwargs):
     user_id = get_current_user_id()
 
     if endpoint == "/api/ingest":
-        file = kwargs.get("files", {}).get("file")
+        file_entry = kwargs.get("files", {}).get("file")
         password = kwargs.get("data", {}).get("password")
-        if file:
-            content = file.getvalue() if hasattr(file, "getvalue") else file.read()
-            fname = file.name.lower()
+        if file_entry:
+            if isinstance(file_entry, tuple):
+                fname = str(file_entry[0]).lower()
+                content = file_entry[1]
+                if hasattr(content, "getvalue"):
+                    content = content.getvalue()
+                elif hasattr(content, "read"):
+                    content = content.read()
+            else:
+                fname = getattr(file_entry, "name", "statement.pdf").lower()
+                content = file_entry.getvalue() if hasattr(file_entry, "getvalue") else file_entry.read()
+
             if fname.endswith(".pdf"):
                 txns_objs = parse_pdf(content, password=password.strip() if password else None)
             else:
@@ -658,6 +667,7 @@ def api_post(endpoint: str, **kwargs):
             save_transactions(raw_dicts, user_id=user_id)
             return {
                 "message": f"Successfully parsed and categorized {len(categorized_txns)} transactions.",
+                "transactions_parsed": len(categorized_txns),
                 "transaction_count": len(categorized_txns),
                 "summary": summary.model_dump(),
             }
