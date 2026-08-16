@@ -39,6 +39,11 @@ BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 if hasattr(st, "secrets") and "BACKEND_URL" in st.secrets:
     BACKEND_URL = st.secrets["BACKEND_URL"].rstrip("/")
 
+def get_brevo_key():
+    if hasattr(st, "secrets") and "BREVO_API_KEY" in st.secrets:
+        return st.secrets["BREVO_API_KEY"]
+    return os.getenv("BREVO_API_KEY", "")
+
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
 st.set_page_config(
@@ -1040,12 +1045,12 @@ def render_signup_screen():
                             "intent": "signup"
                         }
                         # Send via Brevo directly
-                        brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
-                        if brevo_k:
+                        b_key = get_brevo_key()
+                        if b_key:
                             try:
                                 requests.post(
                                     "https://api.brevo.com/v3/smtp/email",
-                                    headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
+                                    headers={"accept": "application/json", "api-key": b_key.strip(), "content-type": "application/json"},
                                     json={
                                         "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
                                         "to": [{"email": email_val}],
@@ -1135,12 +1140,12 @@ def render_signin_screen():
                             "code": fallback_otp,
                             "intent": "signin"
                         }
-                        brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
-                        if brevo_k:
+                        b_key = get_brevo_key()
+                        if b_key:
                             try:
                                 requests.post(
                                     "https://api.brevo.com/v3/smtp/email",
-                                    headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
+                                    headers={"accept": "application/json", "api-key": b_key.strip(), "content-type": "application/json"},
                                     json={
                                         "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
                                         "to": [{"email": email_val}],
