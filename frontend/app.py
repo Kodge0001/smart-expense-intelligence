@@ -1013,55 +1013,55 @@ def render_signup_screen():
                     st.error("Please enter a valid email address.")
                 else:
                     st.session_state["auth_email_input"] = email_val
-                        try:
-                            resp = requests.post(
-                                f"{BACKEND_URL}/api/auth/send-otp",
-                                json={"email": email_val, "intent": "signup"},
-                                timeout=12,
-                            )
-                            if resp.status_code == 200:
-                                st.session_state["pending_email"] = email_val
-                                st.session_state["auth_intent"] = "signup"
-                                st.session_state["auth_screen"] = "verify"
-                                st.session_state["signup_account_exists"] = False
-                                st.rerun()
-                            elif resp.status_code == 409:
-                                st.session_state["signup_account_exists"] = True
-                                st.rerun()
-                            else:
-                                raise Exception(resp.text)
-                        except Exception:
-                            # Direct in-app secure OTP generator & Brevo delivery fallback
-                            import random
-                            fallback_otp = f"{random.randint(100000, 999999)}"
-                            st.session_state["fallback_otp_store"] = {
-                                "email": email_val,
-                                "code": fallback_otp,
-                                "intent": "signup"
-                            }
-                            # Send via Brevo directly
-                            brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
-                            if brevo_k:
-                                try:
-                                    requests.post(
-                                        "https://api.brevo.com/v3/smtp/email",
-                                        headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
-                                        json={
-                                            "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
-                                            "to": [{"email": email_val}],
-                                            "subject": f"Your Verification Code: {fallback_otp}",
-                                            "htmlContent": f"<h3>Smart Expense Intelligence</h3><p>Your verification code is: <strong>{fallback_otp}</strong> (valid for 5 minutes).</p>"
-                                        },
-                                        timeout=10
-                                    )
-                                except Exception:
-                                    pass
-                            
+                    try:
+                        resp = requests.post(
+                            f"{BACKEND_URL}/api/auth/send-otp",
+                            json={"email": email_val, "intent": "signup"},
+                            timeout=12,
+                        )
+                        if resp.status_code == 200:
                             st.session_state["pending_email"] = email_val
                             st.session_state["auth_intent"] = "signup"
                             st.session_state["auth_screen"] = "verify"
                             st.session_state["signup_account_exists"] = False
                             st.rerun()
+                        elif resp.status_code == 409:
+                            st.session_state["signup_account_exists"] = True
+                            st.rerun()
+                        else:
+                            raise Exception(resp.text)
+                    except Exception:
+                        # Direct in-app secure OTP generator & Brevo delivery fallback
+                        import random
+                        fallback_otp = f"{random.randint(100000, 999999)}"
+                        st.session_state["fallback_otp_store"] = {
+                            "email": email_val,
+                            "code": fallback_otp,
+                            "intent": "signup"
+                        }
+                        # Send via Brevo directly
+                        brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
+                        if brevo_k:
+                            try:
+                                requests.post(
+                                    "https://api.brevo.com/v3/smtp/email",
+                                    headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
+                                    json={
+                                        "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
+                                        "to": [{"email": email_val}],
+                                        "subject": f"Your Verification Code: {fallback_otp}",
+                                        "htmlContent": f"<h3>Smart Expense Intelligence</h3><p>Your verification code is: <strong>{fallback_otp}</strong> (valid for 5 minutes).</p>"
+                                    },
+                                    timeout=10
+                                )
+                            except Exception:
+                                pass
+                        
+                        st.session_state["pending_email"] = email_val
+                        st.session_state["auth_intent"] = "signup"
+                        st.session_state["auth_screen"] = "verify"
+                        st.session_state["signup_account_exists"] = False
+                        st.rerun()
 
         c1, c2 = st.columns(2)
         with c1:
@@ -1109,54 +1109,54 @@ def render_signin_screen():
                     st.error("Please enter a valid email address.")
                 else:
                     st.session_state["auth_email_input"] = email_val
-                        try:
-                            resp = requests.post(
-                                f"{BACKEND_URL}/api/auth/send-otp",
-                                json={"email": email_val, "intent": "signin"},
-                                timeout=12,
-                            )
-                            if resp.status_code == 200:
-                                st.session_state["pending_email"] = email_val
-                                st.session_state["auth_intent"] = "signin"
-                                st.session_state["auth_screen"] = "verify"
-                                st.session_state["signin_no_account"] = False
-                                st.rerun()
-                            elif resp.status_code == 404:
-                                st.session_state["signin_no_account"] = True
-                                st.rerun()
-                            else:
-                                raise Exception(resp.text)
-                        except Exception:
-                            # Direct in-app secure OTP generator & Brevo delivery fallback
-                            import random
-                            fallback_otp = f"{random.randint(100000, 999999)}"
-                            st.session_state["fallback_otp_store"] = {
-                                "email": email_val,
-                                "code": fallback_otp,
-                                "intent": "signin"
-                            }
-                            brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
-                            if brevo_k:
-                                try:
-                                    requests.post(
-                                        "https://api.brevo.com/v3/smtp/email",
-                                        headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
-                                        json={
-                                            "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
-                                            "to": [{"email": email_val}],
-                                            "subject": f"Your Verification Code: {fallback_otp}",
-                                            "htmlContent": f"<h3>Smart Expense Intelligence</h3><p>Your sign-in code is: <strong>{fallback_otp}</strong> (valid for 5 minutes).</p>"
-                                        },
-                                        timeout=10
-                                    )
-                                except Exception:
-                                    pass
-
+                    try:
+                        resp = requests.post(
+                            f"{BACKEND_URL}/api/auth/send-otp",
+                            json={"email": email_val, "intent": "signin"},
+                            timeout=12,
+                        )
+                        if resp.status_code == 200:
                             st.session_state["pending_email"] = email_val
                             st.session_state["auth_intent"] = "signin"
                             st.session_state["auth_screen"] = "verify"
                             st.session_state["signin_no_account"] = False
                             st.rerun()
+                        elif resp.status_code == 404:
+                            st.session_state["signin_no_account"] = True
+                            st.rerun()
+                        else:
+                            raise Exception(resp.text)
+                    except Exception:
+                        # Direct in-app secure OTP generator & Brevo delivery fallback
+                        import random
+                        fallback_otp = f"{random.randint(100000, 999999)}"
+                        st.session_state["fallback_otp_store"] = {
+                            "email": email_val,
+                            "code": fallback_otp,
+                            "intent": "signin"
+                        }
+                        brevo_k = os.getenv("BREVO_API_KEY") or (st.secrets.get("BREVO_API_KEY") if hasattr(st, "secrets") else None)
+                        if brevo_k:
+                            try:
+                                requests.post(
+                                    "https://api.brevo.com/v3/smtp/email",
+                                    headers={"accept": "application/json", "api-key": brevo_k.strip(), "content-type": "application/json"},
+                                    json={
+                                        "sender": {"name": "Smart Expense Intelligence", "email": "seisystemver@gmail.com"},
+                                        "to": [{"email": email_val}],
+                                        "subject": f"Your Verification Code: {fallback_otp}",
+                                        "htmlContent": f"<h3>Smart Expense Intelligence</h3><p>Your sign-in code is: <strong>{fallback_otp}</strong> (valid for 5 minutes).</p>"
+                                    },
+                                    timeout=10
+                                )
+                            except Exception:
+                                pass
+
+                        st.session_state["pending_email"] = email_val
+                        st.session_state["auth_intent"] = "signin"
+                        st.session_state["auth_screen"] = "verify"
+                        st.session_state["signin_no_account"] = False
+                        st.rerun()
 
         c1, c2 = st.columns(2)
         with c1:
