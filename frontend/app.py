@@ -505,6 +505,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ─── Direct In-Process Backend Engine Integration ──────────────────────────────
+from backend.models.schema import (
+    Transaction,
+    TransactionType,
+    Category,
+    RiskSeverity,
+    FinancialHealthScore,
+    RecurringSubscription,
+    CashFlowForecast,
+)
 from backend.storage.db import (
     init_db,
     load_transactions,
@@ -518,7 +527,11 @@ from backend.ingestion.parser import parse_csv, parse_pdf
 from backend.ai.categorizer import categorize_transactions
 from backend.analytics.recurring import detect_recurring_payments
 from backend.analytics.forecast import forecast_cash_flow
-from backend.analytics.precisa_scorer import compute_financial_health_score
+from backend.analytics.precisa_scorer import (
+    compute_financial_health_score,
+    run_automated_risk_checks,
+    extract_counterparties_and_modes,
+)
 from backend.ai.assistant import answer_financial_query
 
 # Initialize in-process database
