@@ -561,14 +561,7 @@ def api_get(endpoint: str):
             for t in txns_raw
         ]
         rec = detect_recurring_payments(txns_objs)
-        monthly_burn = sum(s.monthly_cost for s in rec)
-        annual_burn = sum(s.annual_cost for s in rec)
-        return {
-            "subscriptions": [s.model_dump() for s in rec],
-            "total_recurring_monthly": monthly_burn,
-            "total_recurring_annual": annual_burn,
-            "recurring_count": len(rec),
-        }
+        return [s.model_dump(mode="json") for s in rec]
     
     elif endpoint == "/api/summary":
         txns_raw = load_transactions(user_id=user_id)
@@ -2292,10 +2285,16 @@ def render_home_page():
 
     # ── Section 6: Subscriptions & Recurring Charges ──
     st.markdown("<br><div class=\"section-header\">🔄 4. Recurring Subscriptions & Burn Radar</div>", unsafe_allow_html=True)
-    recurring = api_get("/api/recurring")
-    if recurring and len(recurring) > 0:
-        recurring_sorted = sorted(recurring, key=lambda x: x.get("annualized_cost", 0), reverse=True)
-        total_annual = sum(r.get("annualized_cost", 0) for r in recurring_sorted)
+    rec_res = api_get("/api/recurring")
+    recurring_items = []
+    if isinstance(rec_res, list):
+        recurring_items = rec_res
+    elif isinstance(rec_res, dict):
+        recurring_items = rec_res.get("subscriptions", [])
+
+    if recurring_items and len(recurring_items) > 0:
+        recurring_sorted = sorted(recurring_items, key=lambda x: x.get("annualized_cost", 0) if isinstance(x, dict) else getattr(x, "annualized_cost", 0), reverse=True)
+        total_annual = sum(r.get("annualized_cost", 0) if isinstance(r, dict) else getattr(r, "annualized_cost", 0) for r in recurring_sorted)
 
         col_r1, col_r2 = st.columns([1, 3])
         with col_r1:
