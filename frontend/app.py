@@ -497,6 +497,104 @@ st.markdown("""
         margin: 1rem 0 0.25rem 0;
     }
 
+    /* ─── Mobile & Tablet Responsive Media Queries ─── */
+    @media (max-width: 768px) {
+        /* General Streamlit Container adjustments */
+        .block-container {
+            padding: 1rem 0.75rem !important;
+        }
+
+        /* Top Header */
+        .main-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding: 1.1rem 1.25rem !important;
+            gap: 0.75rem !important;
+            border-radius: 14px !important;
+        }
+        .main-header-title {
+            font-size: 1.35rem !important;
+        }
+        .main-header-subtitle {
+            font-size: 0.82rem !important;
+        }
+        .user-chip {
+            align-self: flex-start !important;
+            font-size: 0.78rem !important;
+            padding: 0.35rem 0.85rem !important;
+        }
+
+        /* Welcome & Hero Section */
+        .hero-title {
+            font-size: 2.1rem !important;
+            line-height: 1.2 !important;
+        }
+        .hero-subtitle {
+            font-size: 0.95rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        .hero-badge {
+            font-size: 0.75rem !important;
+            padding: 0.3rem 0.8rem !important;
+        }
+
+        /* Metrics Strip on Mobile (2 columns instead of 4) */
+        .metric-strip {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+            padding: 1rem !important;
+            margin: 1.5rem 0 !important;
+        }
+        .metric-number {
+            font-size: 1.45rem !important;
+        }
+        .metric-label {
+            font-size: 0.72rem !important;
+        }
+
+        /* KPI & Feature Cards */
+        .kpi-card {
+            padding: 1rem !important;
+            border-radius: 12px !important;
+            margin-bottom: 0.6rem !important;
+        }
+        .kpi-value {
+            font-size: 1.35rem !important;
+        }
+        .nav-card {
+            min-height: auto !important;
+            padding: 1.2rem 1rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        /* Form Inputs & Buttons */
+        .stButton>button {
+            font-size: 0.92rem !important;
+            padding: 0.6rem 1rem !important;
+            border-radius: 10px !important;
+        }
+
+        /* Tables & Dataframes */
+        [data-testid="stDataFrame"] {
+            overflow-x: auto !important;
+        }
+
+        /* Section headers */
+        .section-header {
+            font-size: 1.1rem !important;
+            margin: 1.5rem 0 0.9rem 0 !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .metric-strip {
+            grid-template-columns: 1fr !important;
+        }
+        .hero-title {
+            font-size: 1.8rem !important;
+        }
+    }
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
 </style>
