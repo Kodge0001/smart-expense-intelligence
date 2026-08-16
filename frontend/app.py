@@ -1642,13 +1642,24 @@ def render_home_page():
     # ── Date Range Filter & Reactive Recomputation ──
     date_filtered_txns = transactions
     if transactions:
+        def parse_to_date(val):
+            if isinstance(val, date):
+                return val
+            if isinstance(val, datetime):
+                return val.date()
+            if isinstance(val, str):
+                try:
+                    return datetime.strptime(val[:10], "%Y-%m-%d").date()
+                except Exception:
+                    pass
+            return None
+
         # Determine statement min and max date
         txn_dates = []
         for t in transactions:
-            try:
-                txn_dates.append(datetime.strptime(t["date"], "%Y-%m-%d").date())
-            except Exception:
-                pass
+            d_obj = parse_to_date(t.get("date"))
+            if d_obj:
+                txn_dates.append(d_obj)
 
         if txn_dates:
             min_stmt_date = min(txn_dates)
@@ -1678,13 +1689,13 @@ def render_home_page():
             start_d, end_d = date_range
             date_filtered_txns = [
                 t for t in transactions
-                if start_d <= datetime.strptime(t["date"], "%Y-%m-%d").date() <= end_d
+                if (d := parse_to_date(t.get("date"))) and start_d <= d <= end_d
             ]
         elif isinstance(date_range, (list, tuple)) and len(date_range) == 1:
             start_d = date_range[0]
             date_filtered_txns = [
                 t for t in transactions
-                if datetime.strptime(t["date"], "%Y-%m-%d").date() >= start_d
+                if (d := parse_to_date(t.get("date"))) and d >= start_d
             ]
 
     # Reactive Aggregations on date_filtered_txns
