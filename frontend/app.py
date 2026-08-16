@@ -36,6 +36,8 @@ if str(PROJECT_ROOT) not in sys.path:
 load_dotenv(PROJECT_ROOT / ".env")
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+if hasattr(st, "secrets") and "BACKEND_URL" in st.secrets:
+    BACKEND_URL = st.secrets["BACKEND_URL"].rstrip("/")
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 
