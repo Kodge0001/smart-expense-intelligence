@@ -580,23 +580,45 @@ def api_get(endpoint: str):
         txns_objs = load_transactions(user_id=user_id)
         if not txns_objs:
             return None
+        from backend.analytics.precisa_scorer import (
+            compute_financial_health_score,
+            run_automated_risk_checks,
+            extract_counterparties_and_modes,
+        )
         health = compute_financial_health_score(txns_objs)
-        rec = detect_recurring_payments(txns_objs)
-        fc = forecast_cash_flow(txns_objs)
-        raw_list = [t.model_dump(mode="json") if hasattr(t, "model_dump") else dict(t) for t in txns_objs]
-        total_income = sum(t["amount"] for t in raw_list if t.get("type") == "credit")
-        total_expenses = sum(t["amount"] for t in raw_list if t.get("type") == "debit")
+        risk_checks = run_automated_risk_checks(txns_objs, health)
+        top_counterparties, payment_modes = extract_counterparties_and_modes(txns_objs)
+
+        from collections import defaultdict
+        monthly_stats = defaultdict(lambda: {"inflow": 0.0, "outflow": 0.0})
+        for t in txns_objs:
+            m_key = t.date.strftime("%b %Y")
+            if t.type == TransactionType.CREDIT:
+                monthly_stats[m_key]["inflow"] += t.amount
+            else:
+                monthly_stats[m_key]["outflow"] += t.amount
+
+        monthly_trends = [
+            {"month": k, "inflow": round(v["inflow"], 2), "outflow": round(v["outflow"], 2)}
+            for k, v in monthly_stats.items()
+        ]
+
+        from backend.models.schema import RiskSeverity
+        failed_critical = sum(1 for c in risk_checks if not c.passed and c.severity in (RiskSeverity.HIGH, RiskSeverity.CRITICAL))
+        if health.overall_score >= 750 and failed_critical == 0:
+            verdict = "🟢 Strong Financial Profile — Recommended for low-risk tier approvals and premium credit limits."
+        elif health.overall_score >= 600 and failed_critical <= 1:
+            verdict = "🟡 Moderate Profile — Standard risk criteria met. Minor anomalies noted in cash-flow buffer."
+        else:
+            verdict = "🔴 High-Risk Profile — Multiple risk triggers detected. Recommend manual underwriter review and collateral verification."
+
         return {
-            "generated_at": datetime.now().isoformat(),
-            "period": f"{raw_list[-1]['date']} to {raw_list[0]['date']}",
-            "health_score": health.model_dump(mode="json") if hasattr(health, "model_dump") else dict(health),
-            "total_inflow": total_income,
-            "total_outflow": total_expenses,
-            "net_cash_flow": total_income - total_expenses,
-            "recurring_commitments": len(rec),
-            "projected_next_month_spend": fc.projected_monthly_spend,
-            "executive_summary": f"Health Score: {health.creditworthiness_score}/1000 ({health.grade}). Overall financial standing is {health.health_band}.",
-            "actionable_recommendations": ["Review top recurring subscriptions", "Maintain safe cash-flow reserve buffer"],
+            "health_score": health.model_dump(mode="json"),
+            "risk_checks": [c.model_dump(mode="json") for c in risk_checks],
+            "top_counterparties": [cp.model_dump(mode="json") for cp in top_counterparties],
+            "payment_mode_breakdown": payment_modes,
+            "monthly_trends": monthly_trends,
+            "underwriting_verdict": verdict,
         }
 
     # Fallback to network request if endpoint not matched above
