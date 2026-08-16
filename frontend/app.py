@@ -660,36 +660,42 @@ def api_post(endpoint: str, **kwargs):
             else:
                 txns_objs = parse_csv(content)
             
-            # Categorize
-            categorized_txns, summary = categorize_transactions(txns_objs)
-            # Save to db
-            raw_dicts = [t.model_dump() for t in categorized_txns]
-            save_transactions(raw_dicts, user_id=user_id)
+            import asyncio
+            for t in txns_objs:
+                t.user_id = user_id
+
+            categorized_txns = asyncio.run(categorize_transactions(txns_objs))
+            # Save to db (save_transactions expects Transaction objects)
+            clear_transactions(user_id=user_id)
+            save_transactions(categorized_txns, user_id=user_id)
             return {
                 "message": f"Successfully parsed and categorized {len(categorized_txns)} transactions.",
                 "transactions_parsed": len(categorized_txns),
                 "transaction_count": len(categorized_txns),
-                "summary": summary.model_dump(),
             }
 
     elif endpoint == "/api/sample-data":
+        import asyncio
         from create_sample_pdf import build_sample_records
         txns_objs = build_sample_records()
-        categorized_txns, summary = categorize_transactions(txns_objs)
-        raw_dicts = [t.model_dump() for t in categorized_txns]
-        save_transactions(raw_dicts, user_id=user_id)
+        for t in txns_objs:
+            t.user_id = user_id
+        categorized_txns = asyncio.run(categorize_transactions(txns_objs))
+        clear_transactions(user_id=user_id)
+        save_transactions(categorized_txns, user_id=user_id)
         return {
             "message": f"Loaded {len(categorized_txns)} demo transactions.",
             "transaction_count": len(categorized_txns),
-            "summary": summary.model_dump(),
         }
 
     elif endpoint == "/api/categorize":
+        import asyncio
         txns_raw = load_transactions(user_id=user_id)
         from backend.models.schema import Transaction, TransactionType, Category
         txns_objs = [
             Transaction(
                 id=t["id"],
+                user_id=user_id,
                 date=t["date"],
                 raw_description=t["raw_description"],
                 amount=t["amount"],
@@ -699,12 +705,11 @@ def api_post(endpoint: str, **kwargs):
             )
             for t in txns_raw
         ]
-        categorized_txns, summary = categorize_transactions(txns_objs)
-        raw_dicts = [t.model_dump() for t in categorized_txns]
-        save_transactions(raw_dicts, user_id=user_id)
+        categorized_txns = asyncio.run(categorize_transactions(txns_objs))
+        save_transactions(categorized_txns, user_id=user_id)
         return {
             "categorized": len(categorized_txns),
-            "transactions": raw_dicts,
+            "transactions": [t.model_dump(mode="json") for t in categorized_txns],
         }
 
     elif endpoint == "/api/chat":
