@@ -674,6 +674,29 @@ def api_post(endpoint: str, **kwargs):
             "summary": summary.model_dump(),
         }
 
+    elif endpoint == "/api/categorize":
+        txns_raw = load_transactions(user_id=user_id)
+        from backend.models.schema import Transaction, TransactionType, Category
+        txns_objs = [
+            Transaction(
+                id=t["id"],
+                date=t["date"],
+                raw_description=t["raw_description"],
+                amount=t["amount"],
+                type=TransactionType(t["type"]),
+                category=Category(t.get("category", "other")),
+                merchant_clean=t.get("merchant_clean"),
+            )
+            for t in txns_raw
+        ]
+        categorized_txns, summary = categorize_transactions(txns_objs)
+        raw_dicts = [t.model_dump() for t in categorized_txns]
+        save_transactions(raw_dicts, user_id=user_id)
+        return {
+            "categorized": len(categorized_txns),
+            "transactions": raw_dicts,
+        }
+
     elif endpoint == "/api/chat":
         query = kwargs.get("json", {}).get("query", "")
         txns_raw = load_transactions(user_id=user_id)
