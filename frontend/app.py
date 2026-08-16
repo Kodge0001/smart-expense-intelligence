@@ -1030,9 +1030,19 @@ def render_signup_screen():
                             st.session_state["signup_account_exists"] = True
                             st.rerun()
                         elif resp.status_code == 429:
-                            st.error(resp.json().get("detail", "Rate limit exceeded. Please wait."))
+                            err_msg = "Rate limit exceeded. Please wait."
+                            try:
+                                err_msg = resp.json().get("detail", err_msg)
+                            except Exception:
+                                pass
+                            st.error(err_msg)
                         else:
-                            err_msg = resp.json().get("detail", "Could not send code, please try again.")
+                            err_msg = "Could not send code, please check backend connectivity."
+                            try:
+                                err_msg = resp.json().get("detail", err_msg)
+                            except Exception:
+                                if resp.text:
+                                    err_msg = resp.text
                             st.error(f"⚠️ {err_msg}")
 
         c1, c2 = st.columns(2)
@@ -1098,9 +1108,19 @@ def render_signin_screen():
                             st.session_state["signin_no_account"] = True
                             st.rerun()
                         elif resp.status_code == 429:
-                            st.error(resp.json().get("detail", "Rate limit exceeded. Please wait."))
+                            err_msg = "Rate limit exceeded. Please wait."
+                            try:
+                                err_msg = resp.json().get("detail", err_msg)
+                            except Exception:
+                                pass
+                            st.error(err_msg)
                         else:
-                            err_msg = resp.json().get("detail", "Could not send code, please try again.")
+                            err_msg = "Could not send code, please check backend connectivity."
+                            try:
+                                err_msg = resp.json().get("detail", err_msg)
+                            except Exception:
+                                if resp.text:
+                                    err_msg = resp.text
                             st.error(f"⚠️ {err_msg}")
 
         c1, c2 = st.columns(2)
