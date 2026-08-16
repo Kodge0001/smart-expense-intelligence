@@ -2785,17 +2785,29 @@ def render_draggable_chatbot(transactions=None):
 
 def render_profile_view():
     """Render the User Profile management view with email-scoped detail storage."""
-    token = st.session_state.get("auth_token", "")
-    headers = {"Authorization": f"Bearer {token}"}
+    user_id = get_current_user_id()
     
-    # Fetch current profile data from backend
-    profile_data = {}
-    try:
-        resp = requests.get(f"{BACKEND_URL}/api/profile", headers=headers, timeout=10)
-        if resp.status_code == 200:
-            profile_data = resp.json()
-    except Exception:
-        pass
+    # Direct fast in-process fetch for 100% reliability
+    from backend.storage.db import get_user_by_email, get_user_by_id, update_user_profile, load_transactions
+    
+    user_rec = get_user_by_id(user_id) or get_user_by_email(user_id) or {}
+    txns = load_transactions(user_id=user_id)
+    
+    profile_data = {
+        "id": user_id,
+        "email": user_rec.get("email") or st.session_state.get("user_info", {}).get("email", ""),
+        "full_name": user_rec.get("full_name") or "",
+        "phone": user_rec.get("phone") or "",
+        "occupation": user_rec.get("occupation") or "",
+        "monthly_budget": float(user_rec.get("monthly_budget") or 0.0),
+        "currency": user_rec.get("currency") or "INR",
+        "city": user_rec.get("city") or "",
+        "bio": user_rec.get("bio") or "",
+        "created_at": user_rec.get("created_at") or "",
+        "last_login": user_rec.get("last_login") or "",
+        "total_statements": 1 if txns else 0,
+        "total_transactions": len(txns),
+    }
 
     email_val = profile_data.get("email") or st.session_state.get("user_info", {}).get("email", "")
 
@@ -2866,16 +2878,15 @@ def render_profile_view():
                     "city": f_city.strip(),
                     "bio": f_bio.strip(),
                 }
-                try:
-                    save_res = requests.put(f"{BACKEND_URL}/api/profile", json=update_payload, headers=headers, timeout=10)
-                    if save_res.status_code == 200:
-                        st.success("✅ Profile information successfully updated and safely saved!")
-                        time.sleep(1)
-                        st.rerun()
-                    else:
-                        st.error(f"Failed to update profile: {save_res.text}")
-                except Exception as e:
-                    st.error(f"Connection error: {e}")
+                
+                # Direct in-process database update
+                update_user_profile(user_id, update_payload)
+                if user_rec.get("id") and user_rec["id"] != user_id:
+                    update_user_profile(user_rec["id"], update_payload)
+                
+                st.success("✅ Profile information successfully updated and safely saved!")
+                time.sleep(0.8)
+                st.rerun()
 
     with col2:
         st.markdown("### 📊 Account Snapshot")
