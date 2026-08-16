@@ -542,37 +542,26 @@ def api_get(endpoint: str):
     user_id = get_current_user_id()
     
     if endpoint == "/api/transactions":
-        txns = load_transactions(user_id=user_id)
-        return {"transactions": txns, "total": len(txns)}
+        txns_objs = load_transactions(user_id=user_id)
+        raw_list = [t.model_dump(mode="json") if hasattr(t, "model_dump") else dict(t) for t in txns_objs]
+        return {"transactions": raw_list, "total": len(raw_list)}
     
     elif endpoint == "/api/recurring":
-        txns_raw = load_transactions(user_id=user_id)
-        from backend.models.schema import Transaction, TransactionType, Category
-        txns_objs = [
-            Transaction(
-                id=t["id"],
-                date=t["date"],
-                raw_description=t["raw_description"],
-                amount=t["amount"],
-                type=TransactionType(t["type"]),
-                category=Category(t.get("category", "other")),
-                merchant_clean=t.get("merchant_clean"),
-            )
-            for t in txns_raw
-        ]
+        txns_objs = load_transactions(user_id=user_id)
         rec = detect_recurring_payments(txns_objs)
-        return [s.model_dump(mode="json") for s in rec]
+        return [s.model_dump(mode="json") if hasattr(s, "model_dump") else dict(s) for s in rec]
     
     elif endpoint == "/api/summary":
-        txns_raw = load_transactions(user_id=user_id)
-        if not txns_raw:
+        txns_objs = load_transactions(user_id=user_id)
+        if not txns_objs:
             return {"total_income": 0.0, "total_expenses": 0.0, "net_savings": 0.0, "savings_rate": 0.0, "transaction_count": 0, "top_category": None, "category_breakdown": {}}
-        total_income = sum(t["amount"] for t in txns_raw if t.get("type") == "credit")
-        total_expenses = sum(t["amount"] for t in txns_raw if t.get("type") == "debit")
+        raw_list = [t.model_dump(mode="json") if hasattr(t, "model_dump") else dict(t) for t in txns_objs]
+        total_income = sum(t["amount"] for t in raw_list if t.get("type") == "credit")
+        total_expenses = sum(t["amount"] for t in raw_list if t.get("type") == "debit")
         net = total_income - total_expenses
         rate = (net / total_income * 100) if total_income > 0 else 0.0
         cat_map = {}
-        for t in txns_raw:
+        for t in raw_list:
             if t.get("type") == "debit":
                 c = t.get("category", "other")
                 cat_map[c] = cat_map.get(c, 0.0) + t.get("amount", 0.0)
@@ -582,37 +571,25 @@ def api_get(endpoint: str):
             "total_expenses": total_expenses,
             "net_savings": net,
             "savings_rate": rate,
-            "transaction_count": len(txns_raw),
+            "transaction_count": len(raw_list),
             "top_category": top_cat,
             "category_breakdown": cat_map,
         }
 
     elif endpoint == "/api/intelligence-report":
-        txns_raw = load_transactions(user_id=user_id)
-        if not txns_raw:
+        txns_objs = load_transactions(user_id=user_id)
+        if not txns_objs:
             return None
-        from backend.models.schema import Transaction, TransactionType, Category
-        txns_objs = [
-            Transaction(
-                id=t["id"],
-                date=t["date"],
-                raw_description=t["raw_description"],
-                amount=t["amount"],
-                type=TransactionType(t["type"]),
-                category=Category(t.get("category", "other")),
-                merchant_clean=t.get("merchant_clean"),
-            )
-            for t in txns_raw
-        ]
         health = compute_financial_health_score(txns_objs)
         rec = detect_recurring_payments(txns_objs)
         fc = forecast_cash_flow(txns_objs)
-        total_income = sum(t["amount"] for t in txns_raw if t.get("type") == "credit")
-        total_expenses = sum(t["amount"] for t in txns_raw if t.get("type") == "debit")
+        raw_list = [t.model_dump(mode="json") if hasattr(t, "model_dump") else dict(t) for t in txns_objs]
+        total_income = sum(t["amount"] for t in raw_list if t.get("type") == "credit")
+        total_expenses = sum(t["amount"] for t in raw_list if t.get("type") == "debit")
         return {
             "generated_at": datetime.now().isoformat(),
-            "period": f"{txns_raw[-1]['date']} to {txns_raw[0]['date']}",
-            "health_score": health.model_dump(),
+            "period": f"{raw_list[-1]['date']} to {raw_list[0]['date']}",
+            "health_score": health.model_dump(mode="json") if hasattr(health, "model_dump") else dict(health),
             "total_inflow": total_income,
             "total_outflow": total_expenses,
             "net_cash_flow": total_income - total_expenses,
