@@ -1,5 +1,13 @@
 # 💰 Smart Expense Intelligence System
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://smart-expense-intelligence-mf8ingsnuyjhpmwpcw9lk9.streamlit.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/Kodge0001/smart-expense-intelligence)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> 🌐 **Live Web Application:** [https://smart-expense-intelligence-mf8ingsnuyjhpmwpcw9lk9.streamlit.app/](https://smart-expense-intelligence-mf8ingsnuyjhpmwpcw9lk9.streamlit.app/)
+
 An AI-powered financial analytics platform that transforms raw bank statements into actionable spending insights. Upload a CSV/PDF statement and get **AI-categorized spending breakdown**, **recurring subscription detection**, and **cash-flow forecasting** — all in an interactive dashboard.
 
 > **Portfolio project** — designed to demonstrate full-stack Python skills, AI integration with cost control, and deliberate architecture decisions (AI vs. deterministic algorithms).
