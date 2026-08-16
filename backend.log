@@ -1,0 +1,116 @@
+INFO:     Will watch for changes in these directories: ['/Users/anuragkodge/Resume /expense-intelligence']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [7241] using StatReload
+INFO:     Started server process [7243]
+INFO:     Waiting for application startup.
+2026-08-16 19:03:36,022 │ expense-intelligence │ INFO │ Database initialized successfully.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58716 - "GET /api/health HTTP/1.1" 404 Not Found
+2026-08-16 19:04:00,581 │ expense-intelligence.auth.jwt │ WARNING │ Invalid token: Signature verification failed
+INFO:     127.0.0.1:58721 - "PUT /api/profile HTTP/1.1" 401 Unauthorized
+WARNING:  StatReload detected changes in 'backend/auth/security.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [7243]
+INFO:     Started server process [7675]
+INFO:     Waiting for application startup.
+2026-08-16 19:04:19,258 │ expense-intelligence │ INFO │ Database initialized successfully.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58730 - "PUT /api/profile HTTP/1.1" 200 OK
+2026-08-16 19:05:28,582 │ expense-intelligence.auth.email │ INFO │ OTP sent successfully via Brevo API to gamingfreace@gmail.com
+INFO:     127.0.0.1:58755 - "POST /api/auth/send-otp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58759 - "POST /api/auth/verify-otp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58761 - "GET /api/transactions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58763 - "GET /api/recurring HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58765 - "GET /api/intelligence-report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58767 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58773 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58775 - "PUT /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58777 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58779 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58781 - "GET /api/transactions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58783 - "GET /api/recurring HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58785 - "GET /api/intelligence-report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58787 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58789 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58791 - "PUT /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58795 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58821 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58823 - "PUT /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58825 - "POST /api/chat HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/anaconda3/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 2685, in app
+    await route.handle(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 1267, in handle
+    await super().handle(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 151, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/opt/anaconda3/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 137, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 691, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/opt/anaconda3/lib/python3.13/site-packages/fastapi/routing.py", line 345, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/anuragkodge/Resume /expense-intelligence/backend/main.py", line 423, in chat_with_transactions
+    timestamp=datetime.now().strftime("%I:%M %p"),
+              ^^^^^^^^
+NameError: name 'datetime' is not defined. Did you forget to import 'datetime'?
+WARNING:  StatReload detected changes in 'backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [7675]
+INFO:     Started server process [10234]
+INFO:     Waiting for application startup.
+2026-08-16 19:08:35,033 │ expense-intelligence │ INFO │ Database initialized successfully.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58835 - "GET /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58837 - "PUT /api/profile HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58839 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /api/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /api/recurring HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58845 - "GET /api/intelligence-report HTTP/1.1" 200 OK
