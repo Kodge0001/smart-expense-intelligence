@@ -546,23 +546,35 @@ st.markdown("""
 
         /* Metrics Strip on Mobile (2 columns instead of 4) */
         .metric-strip {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 0.65rem !important;
-            padding: 0.85rem !important;
-            margin: 1.25rem 0 !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.85rem !important;
+            padding: 1.1rem 0.85rem !important;
+            margin: 1.5rem 0 !important;
+            border-radius: 16px !important;
+        }
+        .metric-card {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.5rem !important;
         }
         .metric-number {
-            font-size: 1.35rem !important;
+            font-size: 1.6rem !important;
+            line-height: 1.1 !important;
         }
         .metric-label {
-            font-size: 0.7rem !important;
+            font-size: 0.72rem !important;
+            line-height: 1.3 !important;
+            margin-top: 0.35rem !important;
+            text-align: center !important;
         }
 
         /* KPI & Feature Cards */
         .kpi-card {
-            padding: 0.9rem 1rem !important;
-            border-radius: 12px !important;
-            margin-bottom: 0.5rem !important;
+            padding: 1rem !important;
+            border-radius: 14px !important;
+            margin-bottom: 0.75rem !important;
         }
         .kpi-label {
             font-size: 0.68rem !important;
@@ -1206,36 +1218,24 @@ def render_welcome_screen():
             st.session_state["auth_screen"] = "signin"
             st.rerun()
 
-    # Metrics Strip with rich inline styling
+    # Metrics Strip with responsive CSS class
     st.markdown("""
-    <div style="
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.2rem;
-        background: linear-gradient(135deg, rgba(30, 27, 75, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(139, 92, 246, 0.35);
-        border-radius: 20px;
-        padding: 1.8rem 1.5rem;
-        margin: 3.5rem 0 2.5rem 0;
-        text-align: center;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(99, 102, 241, 0.15);
-    ">
-        <div>
-            <div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">1,200+</div>
-            <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 0.3rem;">Bank Formats Supported</div>
+    <div class="metric-strip">
+        <div class="metric-card">
+            <div class="metric-number" style="background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">1,200+</div>
+            <div class="metric-label">Bank Formats Supported</div>
         </div>
-        <div>
-            <div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">850+</div>
-            <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 0.3rem;">Banks Worldwide</div>
+        <div class="metric-card">
+            <div class="metric-number" style="background: linear-gradient(135deg, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">850+</div>
+            <div class="metric-label">Banks Worldwide</div>
         </div>
-        <div>
-            <div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #f472b6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">14+</div>
-            <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 0.3rem;">Automated Risk Checks</div>
+        <div class="metric-card">
+            <div class="metric-number" style="background: linear-gradient(135deg, #f472b6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">14+</div>
+            <div class="metric-label">Automated Risk Checks</div>
         </div>
-        <div>
-            <div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">99.4%</div>
-            <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 0.3rem;">Extraction Accuracy</div>
+        <div class="metric-card">
+            <div class="metric-number" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">99.4%</div>
+            <div class="metric-label">Extraction Accuracy</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
