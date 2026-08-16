@@ -26,8 +26,12 @@ from backend.models.schema import (
 
 logger = logging.getLogger(__name__)
 
-# Database file location — relative to project root
-DB_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+# Database file location — uses /tmp on Vercel/serverless environments, local /data otherwise
+if os.getenv("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    DB_DIR = Path("/tmp")
+else:
+    DB_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+
 DB_PATH = DB_DIR / "expense_intelligence.db"
 
 
@@ -37,11 +41,10 @@ def _ensure_db_dir():
 
 
 def get_connection() -> sqlite3.Connection:
-    """Get a synchronous SQLite connection (used for simplicity)."""
+    """Get a synchronous SQLite connection."""
     _ensure_db_dir()
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
     return conn
 
 

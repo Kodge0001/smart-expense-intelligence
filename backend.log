@@ -114,3 +114,21 @@ INFO:     127.0.0.1:58839 - "POST /api/chat HTTP/1.1" 200 OK
 INFO:     127.0.0.1:58841 - "GET /api/summary HTTP/1.1" 200 OK
 INFO:     127.0.0.1:58843 - "GET /api/recurring HTTP/1.1" 200 OK
 INFO:     127.0.0.1:58845 - "GET /api/intelligence-report HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'backend/storage/db.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [10234]
+INFO:     Started server process [19051]
+INFO:     Waiting for application startup.
+2026-08-16 19:23:06,238 │ expense-intelligence │ INFO │ Database initialized successfully.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [19051]
+INFO:     Started server process [19157]
+INFO:     Waiting for application startup.
+2026-08-16 19:23:12,125 │ expense-intelligence │ INFO │ Database initialized successfully.
+INFO:     Application startup complete.

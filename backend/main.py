@@ -108,6 +108,12 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def root():
+    """Root endpoint for Vercel health checks."""
+    return {"status": "online", "service": "Smart Expense Intelligence System", "version": "1.0.0"}
+
+
 @app.on_event("startup")
 async def startup():
     """Initialize the database on application startup."""
