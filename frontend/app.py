@@ -65,11 +65,22 @@ if "auth_screen" not in st.session_state:
 if "selected_drilldown_category" not in st.session_state:
     st.session_state["selected_drilldown_category"] = "All"
 
-# ─── Custom CSS ───────────────────────────────────────────────────────────────
-
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    /* ─── Hide Streamlit Branding, Header, Footer & 'Manage app' button ─── */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    header[data-testid="stHeader"] {visibility: hidden !important; display: none !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    [data-testid="stDecoration"] {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    .styles_viewerBadge__1A-p5 {display: none !important;}
+    .stAppDeployButton {display: none !important;}
+    div[class*="viewerBadge"] {display: none !important;}
+    div[class*="manage-app"] {display: none !important;}
+    div[data-testid="stStatusWidget"] {display: none !important;}
 
     .stApp {
         font-family: 'Inter', sans-serif;
